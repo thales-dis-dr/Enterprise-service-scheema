@@ -10,23 +10,6 @@ security:
   - bearerAuth: []
 paths:
   /capture:
-    get:
-      deprecated: true
-      summary: Get Capture set
-      description: 'Used for testing; Gets all capture sets'
-      tags:
-        - capture
-      responses:
-        '403':
-          $ref: '#/components/responses/FORBIDDEN'
-        '401':
-          $ref: '#/components/responses/UNAUTHORIZED'
-        '400':
-          $ref: '#/components/responses/BAD_REQUEST'
-        '200':
-          $ref: '#/components/responses/CapturesGetResponse'
-        default:
-          $ref: '#/components/responses/UnexpectedError'
     post:
       summary: Create A Capture Set
       description: Creates a new capture set
@@ -83,47 +66,6 @@ paths:
           type: string
           minLength: 1
         example: '5f3c3a02b0b7ae5baeb497ea'
-    get:
-      deprecated: true
-      summary: Get Capture set
-      description: 'Used for testing; Gets a capture set by id'
-      tags:
-        - capture
-      responses:
-        '403':
-          $ref: '#/components/responses/FORBIDDEN'
-        '401':
-          $ref: '#/components/responses/UNAUTHORIZED'
-        '400':
-          $ref: '#/components/responses/BAD_REQUEST'
-        '200':
-          $ref: '#/components/responses/CaptureGetResponse'
-        default:
-          $ref: '#/components/responses/UnexpectedError'
-    delete:
-      deprecated: true
-      summary: 'Delete A capture set'
-      description: 'Used for testing;  deletes a capture set'
-      operationId: dataCapture
-      tags:
-        - capture
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CaptureDataRequest'
-      responses:
-        '403':
-          $ref: '#/components/responses/FORBIDDEN'
-        '401':
-          $ref: '#/components/responses/UNAUTHORIZED'
-        '400':
-          $ref: '#/components/responses/BAD_REQUEST'
-        '200':
-          $ref: '#/components/responses/OK'
-        default:
-          $ref: '#/components/responses/UnexpectedError'
     post:
       summary: 'Add capture data'
       description: 'Inserts details about a capture to a capture set'
