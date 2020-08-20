@@ -1,0 +1,301 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: ESF-back
+  description: 'This API describes services that readers will send to'
+servers:
+  - url: 'http://localhost:3000'
+security:
+  - {}
+  - bearerAuth: []
+paths:
+  /capture:
+    get:
+      deprecated: true
+      summary: Get Capture set
+      description: 'Used for testing; Gets all capture sets'
+      tags:
+        - capture
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/CapturesGetResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    post:
+      summary: Create A Capture Set
+      description: Creates a new capture set
+      operationId: startCapture
+      tags:
+        - capture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureRequest'
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/CaptureStartResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /capture/{id}/done:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the capture
+        required: true
+        schema:
+          type: string
+    post:
+      summary: 'Complete a capture set'
+      description: 'Indicates that we are done with a capture set'
+      operationId: daneCapture
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/OK'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /capture/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the capture set
+        required: true
+        schema:
+          type: string
+          minLength: 1
+        example: '5f3c3a02b0b7ae5baeb497ea'
+    get:
+      deprecated: true
+      summary: Get Capture set
+      description: 'Used for testing; Gets a capture set by id'
+      tags:
+        - capture
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/CaptureGetResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    delete:
+      deprecated: true
+      summary: 'Delete A capture set'
+      description: 'Used for testing;  deletes a capture set'
+      operationId: dataCapture
+      tags:
+        - capture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureDataRequest'
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/OK'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    post:
+      summary: 'Add capture data'
+      description: 'Inserts details about a capture to a capture set'
+      operationId: dataCapture
+      tags:
+        - capture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureDataRequest'
+      responses:
+        '403':
+          $ref: '#/components/responses/FORBIDDEN'
+        '401':
+          $ref: '#/components/responses/UNAUTHORIZED'
+        '400':
+          $ref: '#/components/responses/BAD_REQUEST'
+        '200':
+          $ref: '#/components/responses/OK'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: psk
+  responses:
+    OK:
+      description: '200: OK'
+      content:
+        application/json:
+          schema:
+            type: string
+            example: "OK"
+    UNAUTHORIZED:
+      description: '401: UNAUTHORIZED'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    FORBIDDEN:
+      description: '403: FORBIDDEN'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BAD_REQUEST:
+      description: '400: BAD_REQUEST'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NOT_FOUND:
+      description: '404: NOT_FOUND'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnexpectedError:
+      description: 'Unexpected Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    CaptureStartResponse:
+      description: '200: Details about an open capture operation'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CaptureResponse'
+    CaptureGetResponse:
+      description: '200: capture operation'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CaptureSet'
+    CapturesGetResponse:
+      description: '200: capture operations'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CaptureSet'
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    CaptureRequest:
+      type: object
+      required:
+      - deviceId
+      properties:
+        deviceId:
+          $ref: '#/components/schemas/deviceId'
+    CaptureResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id: 
+          $ref: '#/components/schemas/captureSetId'
+    CaptureDataRequest:
+      type: object
+      required:
+      - type
+        img
+      properties:
+        id:
+          type: integer
+          minimum: 0
+        type:
+          $ref: '#/components/schemas/ReaderDataType'
+        img:
+          type: string
+    CaptureSet:
+      type: object
+      required:
+      - id
+        serial
+        instance
+      properties:
+        id:
+          type: string
+          minLength: 1
+        deviceId:
+          $ref: '#/components/schemas/deviceId'
+        serial:
+          type: string
+          minLength: 1
+          example: serial123
+        instance:
+          type: string
+          minLength: 1
+          example: instance123
+        done:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaptureData'
+    CaptureData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          $ref: '#/components/schemas/ReaderDataType'
+    ReaderDataType:
+      type: integer
+      minimum: 0
+      maximum: 188
+      description: this number corrisponds to the ReaderDataType enumeration
+    deviceId:
+      type: string
+      minLength: 1
+      pattern: ^\w*_\w$
+      description: device is is made up of a serial number '_' and an instance id
+      example: 'serial123_instance123'
+    captureSetId:
+      type: string
+      minLength: 1
+      description: this field is any nonempty string
+      example: 5f3c3a02b0b7ae5baeb497ea
